@@ -12,15 +12,16 @@ database.sync();
 
 app.use(Express.json());
 
-app.use(Express.static(_dirname + '/public'));
-console.log(_dirname);
+app.use(Express.static(__dirname + '/public'));
+console.log(__dirname);
+ 
 
 
 app.get('/', (request, response) => response.render('index'));
 
 const csa = require('./controllers/csaController');
 
-app.use('/user', user);
+app.use('/user', csa);
 
 const user = require('./controllers/userController');
 app.use('/user', user);
