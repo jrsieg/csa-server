@@ -20,8 +20,7 @@ console.log(__dirname);
 app.get('/', (request, response) => response.render('index'));
 
 const csa = require('./controllers/csaController');
-
-app.use('/user', csa);
+app.use('/csa', csa);
 
 const user = require('./controllers/userController');
 app.use('/user', user);

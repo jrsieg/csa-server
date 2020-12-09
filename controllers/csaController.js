@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../db').import('../models/user');
+const CSA = require('../db').import('../models/csa');
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -8,19 +8,20 @@ const validateSession = require('../middleware/validate-session');
 
 // sign up POST
 router.post("/signup", (req, res) => {
-    User.create({
+    CSA.create({
+        farmName: req.body.farmName,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 12)
         
     })
-        .then(user => {
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "365d"})
+        .then(csa => {
+            const token = jwt.sign({ id: csa.id }, process.env.JWT_SECRET, { expiresIn: "365d"})
 
             res.json({
-                user: user,
-                message: "user was created successfully",
+                csa: csa,
+                message: "CSA was created successfully",
                 sessionToken: token
             })
         })
@@ -28,17 +29,17 @@ router.post("/signup", (req, res) => {
 })
 
 router.post('/signin', (req, res) => {
-    User.findOne({
+    CSA.findOne({
         where: { email: req.body.email }
     })
-        .then(user => {
-            if (user) {
-                bcrypt.compare(req.body.password, user.password, (err, matches) => {
+        .then(csa => {
+            if (csa) {
+                bcrypt.compare(req.body.password, csa.password, (err, matches) => {
                     if (matches) {
-                        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "365d" });
+                        const token = jwt.sign({ id: csa.id }, process.env.JWT_SECRET, { expiresIn: "365d" });
 
                         res.json({
-                            user: user,
+                            csa: csa,
                             message: "successfully authenticated",
                             sessionToken: token
                         })
@@ -48,7 +49,7 @@ router.post('/signin', (req, res) => {
                 })
 
             } else {
-                res.status(500).json({error: 'user not found'})
+                res.status(500).json({error: 'CSA not found'})
             }
 
         })
@@ -57,16 +58,16 @@ router.post('/signin', (req, res) => {
 
 
 
-// update user account --- still in progress (J)
+// update CSA account --- still in progress 
 router.put('/update', validateSession, (req, res) => {
 
     
-    User.update(
-        { email: req.body.email },{where: { email: req.user.email }, returning: true}
-    ) .then ((user) => {
+    CSA.update(
+        { email: req.body.email },{where: { email: req.csa.email }, returning: true}
+    ) .then ((csa) => {
         res.status(200).json({
-            Message: "User updated",
-            User: user
+            Message: "CSA updated",
+            CSA: csa
         })
     }
 
@@ -77,20 +78,20 @@ router.put('/update', validateSession, (req, res) => {
 })
 
 
-//delete user account --- still in progress (J)
+//delete CSA account --- still in progress 
 
-router.delete('/deleteuser', (req, res) => {
-    User.findOne({
+router.delete('/deleteCSA', (req, res) => {
+    CSA.findOne({
         where: { email: req.body.email }
     })
-        .then(user => {
-            if (user) {
-                bcrypt.compare(req.body.password, user.password, (err, matches) => {
+        .then(csa => {
+            if (csa) {
+                bcrypt.compare(req.body.password, csa.password, (err, matches) => {
                     if (matches) {
-                        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "365d" });
+                        const token = jwt.sign({ id: csa.id }, process.env.JWT_SECRET, { expiresIn: "365d" });
 
                         res.json({
-                            user: user,
+                            csa: csa,
                             message: "successfully authenticated",
                             sessionToken: token
                         })
@@ -100,7 +101,7 @@ router.delete('/deleteuser', (req, res) => {
                 })
 
             } else {
-                res.status(500).json({error: 'user not found'})
+                res.status(500).json({error: 'CSA not found'})
             }
 
         })
