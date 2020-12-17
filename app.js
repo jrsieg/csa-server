@@ -25,5 +25,8 @@ app.use('/csa', csa);
 const user = require('./controllers/userController');
 app.use('/user', user);
 
+const junction = require('./controllers/junctionController');
+app.use('/junction', junction);
+
 
 app.listen(process.env.PORT, function(){ console.log(`app is listening on port ${process.env.PORT}`)});
