@@ -9,11 +9,15 @@ const validateSession = require('../middleware/validate-session');
 // sign up POST
 router.post("/signup", (req, res) => {
     CSA.create({
-        farmName: req.body.farmName,
+        csaName: req.body.csaName,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 12)
+        password: bcrypt.hashSync(req.body.password, 12),
+        zipcode: req.body.zipcode,
+        produce: req.body.produce,
+        bio: req.body.bio
+
         
     })
         .then(csa => {
@@ -25,7 +29,7 @@ router.post("/signup", (req, res) => {
                 sessionToken: token
             })
         })
-        .catch(err => res.status(500).send(err))
+        .catch(err => res.status(500).json(err))
 })
 
 router.post('/signin', (req, res) => {
@@ -55,6 +59,16 @@ router.post('/signin', (req, res) => {
         })
         .catch(err => res.status(500).json({error: 'error with database'}))
 });
+
+
+// Find CSAs for Profiler
+
+router.get('/browsecsas', (req, res) => {
+    CSA.findAll()
+        .then(csa => res.status(200).json(csa))
+        .catch(err => res.status(500).json({ error: err}))
+})
+
 
 
 
