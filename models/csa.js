@@ -1,15 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('user', {
+    return sequelize.define('csa', {
         
-        farmName: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        firstName: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        lastName: {
+        csaName: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -21,7 +13,30 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        firstName: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        lastName: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        zipcode: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        produce: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        bio: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
+
+
+
     })
     
 }

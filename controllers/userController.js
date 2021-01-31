@@ -4,6 +4,7 @@ const User = require('../db').import('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validateSession = require('../middleware/validate-session');
+const { response } = require('express');
 
 
 // sign up POST
@@ -77,33 +78,14 @@ router.put('/update', validateSession, (req, res) => {
 })
 
 
-//delete user account --- still in progress (J)
+//delete user account --- still in progress
 
-router.delete('/deleteuser', (req, res) => {
-    User.findOne({
-        where: { email: req.body.email }
-    })
-        .then(user => {
-            if (user) {
-                bcrypt.compare(req.body.password, user.password, (err, matches) => {
-                    if (matches) {
-                        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "365d" });
-
-                        res.json({
-                            user: user,
-                            message: "successfully authenticated",
-                            sessionToken: token
-                        })
-                    } else{
-                        res.status(502).json({ error: 'password mismatch' });
-                    }
-                })
-
-            } else {
-                res.status(500).json({error: 'user not found'})
-            }
-
-        })
+router.delete('/deleteuser/:id', validateSession, (req, res) => {
+  
+    const query = {where: {id: req.params.id, owner: req.user.id}}
+ 
+    User.destroy(query)
+        .then(() => response.status(200).json({ message: "Account Deleted" }))
         .catch(err => res.status(500).json({error: 'error with database'}))
 });
 
