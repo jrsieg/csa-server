@@ -4,9 +4,14 @@ const Sequelize = require('sequelize');
 
 
 //create a new instance of Sequelize, connecting us to a database
-const database = new Sequelize(process.env.NAME, 'postgres', process.env.PASS, {
-    host: 'localhost',
-    dialect: 'postgres'
+const database = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false, // <<<<<<< YOU NEED THIS TO FIX UNHANDLED REJECTION 
+        },
+    }
 });
 
 database.authenticate()
